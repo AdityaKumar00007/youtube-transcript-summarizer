@@ -1,4 +1,23 @@
-# 🎬 YouTube Transcript Summarizer
+# 🎬 YouTube Tran- **🔄 Error Handling**: Comprehensive error handling and user feedback
+
+## 🎨 User Interface
+
+### Modern Design Features:
+- **🎯 Clean, Professional Layout**: Gradient backgrounds with modern card-based design
+- **📱 Fully Responsive**: Optimized for desktop, tablet, and mobile devices
+- **⚡ Interactive Elements**: Real-time input validation with visual feedback
+- **🎭 Smooth Animations**: Loading states, transitions, and hover effects
+- **🎨 YouTube-Themed Colors**: Red accents matching YouTube branding
+- **📝 Clear Typography**: Inter font family for excellent readability
+
+### User Experience:
+- **🔍 Smart Input Detection**: Automatically validates YouTube URLs and video IDs
+- **💫 Loading Animations**: Animated spinner with progress indication
+- **✅ Success/Error States**: Clear feedback with icons and color coding
+- **⌨️ Keyboard Shortcuts**: Enter to submit, Escape to clear, Ctrl+Enter alternative
+- **🔗 Direct Video Access**: Quick link to original video after summarization
+
+## 🚀 Quick Startipt Summarizer
 
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)](https://flask.palletsprojects.com/)
@@ -17,15 +36,7 @@ An AI-powered web application that extracts and summarizes YouTube video transcr
 - **⌨️ Keyboard Shortcuts**: Enhanced user experience with hotkeys
 - **🔄 Error Handling**: Comprehensive error handling and user feedback
 
-## 🖼️ Screenshots
-
-### Desktop View
-![Desktop View](https://via.placeholder.com/800x600/667eea/ffffff?text=Desktop+View)
-
-### Mobile View
-![Mobile View](https://via.placeholder.com/400x800/764ba2/ffffff?text=Mobile+View)
-
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
