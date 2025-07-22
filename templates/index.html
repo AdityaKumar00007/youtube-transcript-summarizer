@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Transcript Summarizer | AI-Powered Video Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF0000;
+            --primary-hover: #E60000;
+            --primary-light: #FFE6E6;
+            --secondary-color: #1a1a1a;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #edf2f7;
+            --border-color: #e2e8f0;
+            --border-focus: #4299e1;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            z-index: -1;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            position: relative;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #cc0000 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+
+        .main-content {
+            padding: 40px 30px;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            border: 1px solid #bfdbfe;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .instructions-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #3b82f6;
+            font-size: 1.2rem;
+        }
+
+        .instructions h3 {
+            color: #1e40af;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .instructions code {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover:before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .clear-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 16px 20px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .clear-btn:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .loading {
+            text-align: center;
+            margin: 30px 0;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .spinner-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg-tertiary);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .loading-dots {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .error i {
+            font-size: 1.2rem;
+            color: #dc2626;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: #166534;
+            border: 1px solid #86efac;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .success i {
+            font-size: 1.2rem;
+            color: #16a34a;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .summary-section {
+            margin-top: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-tertiary);
+        }
+
+        .summary-header h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .summary-header i {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .summary-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--primary-color);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            white-space: pre-line;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .video-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .video-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .video-link a:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+        }
+
+        .video-link i {
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-subtext {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: var(--radius-lg);
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .button-container button {
+                width: 100%;
+            }
+            
+            .instructions {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .header .subtitle {
+                font-size: 1rem;
+            }
+            
+            input[type="text"] {
+                padding: 14px 14px 14px 45px;
+            }
+            
+            button {
+                padding: 14px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fab fa-youtube"></i> YouTube Transcript Summarizer</h1>
+                <p class="subtitle">AI-Powered Video Summary in Seconds</p>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="instructions">
+                <i class="fas fa-info-circle instructions-icon"></i>
+                <h3>How it works:</h3>
+                <p>• Enter a YouTube video ID or paste the complete URL</p>
+                <p>• Our AI will fetch and analyze the video transcript</p>
+                <p>• Get a concise summary highlighting key points</p>
+                <p><strong>Example:</strong> <code>https://www.youtube.com/watch?v=dQw4w9WgXcQ</code> or <code>dQw4w9WgXcQ</code></p>
+            </div>
+            
+            <form id="videoForm" onsubmit="return false;" class="form-section">
+                <div class="form-group">
+                    <label for="videoId">
+                        <i class="fab fa-youtube"></i> YouTube Video URL or ID:
+                    </label>
+                    <div class="input-container">
+                        <i class="fas fa-link"></i>
+                        <input type="text" id="videoId" name="videoId" 
+                               placeholder="Paste YouTube URL or video ID here..." 
+                               required autocomplete="off">
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button type="button" onclick="summarize()" id="summarizeBtn">
+                        <i class="fas fa-magic"></i> Generate Summary
+                    </button>
+                    <button type="button" onclick="clearForm()" class="clear-btn">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </form>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                    <span class="loading-text">Analyzing transcript<span class="loading-dots">...</span></span>
+                </div>
+                <p class="loading-subtext">This may take a few moments</p>
+            </div>
+
+            <div id="error-message" class="error hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-text"></span>
+            </div>
+            
+            <div id="success-message" class="success hidden">
+                <i class="fas fa-check-circle"></i>
+                <span>Summary generated successfully!</span>
+            </div>
+            
+            <div id="summary-section" class="summary-section hidden">
+                <div class="summary-header">
+                    <i class="fas fa-file-alt"></i>
+                    <h2>Video Summary</h2>
+                </div>
+                <div id="summary" class="summary-content"></div>
+                <div id="video-link" class="video-link"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced JavaScript with better UX
+        let isProcessing = false;
+        
+        function summarize() {
+            if (isProcessing) return;
+            
+            // Get the video ID from the input field
+            const videoInput = document.getElementById("videoId").value.trim();
+            
+            if (!videoInput) {
+                showError("Please enter a YouTube video URL or ID.");
+                focusInput();
+                return;
+            }
+            
+            // Validate YouTube URL/ID format
+            if (!isValidYouTubeInput(videoInput)) {
+                showError("Please enter a valid YouTube URL or video ID.");
+                focusInput();
+                return;
+            }
+            
+            isProcessing = true;
+            
+            // Update UI state
+            setLoadingState(true);
+            hideMessages();
+            
+            // Animate loading dots
+            animateLoadingDots();
+            
+            // Construct a URL for your Python script
+            const scriptUrl = '/summarize?videoId=' + encodeURIComponent(videoInput);
+
+            // Make a request to your Python script using Fetch API
+            fetch(scriptUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || `Server error: ${response.status}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setLoadingState(false);
+                    
+                    if (data.success) {
+                        showSuccess();
+                        displaySummary(data.summary, data.videoId);
+                        // Smooth scroll to summary
+                        setTimeout(() => {
+                            document.getElementById("summary-section").scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start' 
+                            });
+                        }, 300);
+                    } else {
+                        showError(data.message || "An error occurred while summarizing the video.");
+                    }
+                })
+                .catch(error => {
+                    setLoadingState(false);
+                    console.error('There was a problem with the fetch operation:', error);
+                    showError(error.message || "Failed to connect to the server. Please try again later.");
+                })
+                .finally(() => {
+                    isProcessing = false;
+                });
+        }
+        
+        function clearForm() {
+            document.getElementById("videoId").value = "";
+            hideMessages();
+            document.getElementById("summary-section").classList.add("hidden");
+            focusInput();
+        }
+        
+        function isValidYouTubeInput(input) {
+            // YouTube URL patterns
+            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)[a-zA-Z0-9_-]{11}$/;
+            // YouTube video ID pattern (11 characters)
+            const videoIdRegex = /^[a-zA-Z0-9_-]{11}$/;
+            
+            return youtubeRegex.test(input) || videoIdRegex.test(input);
+        }
+        
+        function setLoadingState(loading) {
+            const loadingEl = document.getElementById("loading");
+            const summaryBtn = document.getElementById("summarizeBtn");
+            
+            if (loading) {
+                loadingEl.classList.remove("hidden");
+                summaryBtn.disabled = true;
+                summaryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            } else {
+                loadingEl.classList.add("hidden");
+                summaryBtn.disabled = false;
+                summaryBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Summary';
+            }
+        }
+        
+        function animateLoadingDots() {
+            const dotsEl = document.querySelector(".loading-dots");
+            if (!dotsEl) return;
+            
+            let dotCount = 0;
+            const interval = setInterval(() => {
+                if (document.getElementById("loading").classList.contains("hidden")) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                dotCount = (dotCount + 1) % 4;
+                dotsEl.textContent = ".".repeat(dotCount);
+            }, 500);
+        }
+        
+        function showError(message) {
+            const errorElement = document.getElementById("error-message");
+            const errorText = document.getElementById("error-text");
+            
+            errorText.textContent = message;
+            errorElement.classList.remove("hidden");
+            
+            // Auto-hide success message if visible
+            document.getElementById("success-message").classList.add("hidden");
+            
+            // Scroll to error
+            setTimeout(() => {
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+        
+        function showSuccess() {
+            const successElement = document.getElementById("success-message");
+            successElement.classList.remove("hidden");
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                successElement.classList.add("hidden");
+            }, 3000);
+        }
+        
+        function hideMessages() {
+            document.getElementById("error-message").classList.add("hidden");
+            document.getElementById("success-message").classList.add("hidden");
+        }
+        
+        function displaySummary(summary, videoId) {
+            // Display the summary
+            const summaryEl = document.getElementById("summary");
+            summaryEl.textContent = summary;
+            
+            // Show video link with enhanced styling
+            const videoLink = document.getElementById("video-link");
+            videoLink.innerHTML = `
+                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-youtube"></i>
+                    Watch Original Video
+                    <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                </a>
+            `;
+            
+            // Show the summary section with animation
+            document.getElementById("summary-section").classList.remove("hidden");
+        }
+        
+        function focusInput() {
+            setTimeout(() => {
+                document.getElementById("videoId").focus();
+            }, 100);
+        }
+        
+        // Enhanced keyboard shortcuts
+        document.getElementById("videoId").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                summarize();
+            }
+        });
+        
+        // Add Ctrl+Enter shortcut
+        document.addEventListener("keydown", function(event) {
+            if (event.ctrlKey && event.key === "Enter") {
+                event.preventDefault();
+                summarize();
+            }
+            
+            // Escape to clear
+            if (event.key === "Escape") {
+                clearForm();
+            }
+        });
+        
+        // Auto-focus input on page load
+        window.addEventListener("load", function() {
+            focusInput();
+        });
+        
+        // Input validation feedback
+        document.getElementById("videoId").addEventListener("input", function() {
+            const input = this.value.trim();
+            const inputContainer = this.parentElement;
+            
+            if (input && !isValidYouTubeInput(input)) {
+                inputContainer.style.borderColor = "#fca5a5";
+                this.style.borderColor = "#fca5a5";
+            } else {
+                inputContainer.style.borderColor = "";
+                this.style.borderColor = "";
+            }
+        });
+    </script>
+</body>
+</html>
