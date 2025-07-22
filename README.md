@@ -191,18 +191,6 @@ python youtube_transcript_summarizer.py
 gunicorn -w 4 -b 0.0.0.0:8000 youtube_transcript_summarizer:app
 ```
 
-### Docker (Optional)
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-RUN python -m spacy download en_core_web_sm
-COPY . .
-EXPOSE 5000
-CMD ["python", "youtube_transcript_summarizer.py"]
-```
-
 ## 🤝 Contributing
 
 1. Fork the repository
