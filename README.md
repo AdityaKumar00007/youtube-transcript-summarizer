@@ -1,23 +1,4 @@
-# 🎬 YouTube Tran- **🔄 Error Handling**: Comprehensive error handling and user feedback
-
-## 🎨 User Interface
-
-### Modern Design Features:
-- **🎯 Clean, Professional Layout**: Gradient backgrounds with modern card-based design
-- **📱 Fully Responsive**: Optimized for desktop, tablet, and mobile devices
-- **⚡ Interactive Elements**: Real-time input validation with visual feedback
-- **🎭 Smooth Animations**: Loading states, transitions, and hover effects
-- **🎨 YouTube-Themed Colors**: Red accents matching YouTube branding
-- **📝 Clear Typography**: Inter font family for excellent readability
-
-### User Experience:
-- **🔍 Smart Input Detection**: Automatically validates YouTube URLs and video IDs
-- **💫 Loading Animations**: Animated spinner with progress indication
-- **✅ Success/Error States**: Clear feedback with icons and color coding
-- **⌨️ Keyboard Shortcuts**: Enter to submit, Escape to clear, Ctrl+Enter alternative
-- **🔗 Direct Video Access**: Quick link to original video after summarization
-
-## 🚀 Quick Startipt Summarizer
+# 🎬 YouTube Transcript Summarizer
 
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)](https://flask.palletsprojects.com/)
@@ -36,7 +17,24 @@ An AI-powered web application that extracts and summarizes YouTube video transcr
 - **⌨️ Keyboard Shortcuts**: Enhanced user experience with hotkeys
 - **🔄 Error Handling**: Comprehensive error handling and user feedback
 
-##  Quick Start
+## 🎨 User Interface
+
+### Modern Design Features:
+- **🎯 Clean, Professional Layout**: Gradient backgrounds with modern card-based design
+- **📱 Fully Responsive**: Optimized for desktop, tablet, and mobile devices
+- **⚡ Interactive Elements**: Real-time input validation with visual feedback
+- **🎭 Smooth Animations**: Loading states, transitions, and hover effects
+- **🎨 YouTube-Themed Colors**: Red accents matching YouTube branding
+- **📝 Clear Typography**: Inter font family for excellent readability
+
+### User Experience:
+- **🔍 Smart Input Detection**: Automatically validates YouTube URLs and video IDs
+- **💫 Loading Animations**: Animated spinner with progress indication
+- **✅ Success/Error States**: Clear feedback with icons and color coding
+- **⌨️ Keyboard Shortcuts**: Enter to submit, Escape to clear, Ctrl+Enter alternative
+- **🔗 Direct Video Access**: Quick link to original video after summarization
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -47,7 +45,7 @@ An AI-powered web application that extracts and summarizes YouTube video transcr
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/youtube-transcript-summarizer.git
+   git clone https://github.com/AdityaKumar00007/youtube-transcript-summarizer.git
    cd youtube-transcript-summarizer
    ```
 
@@ -225,9 +223,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-Your Name - [your.email@example.com](mailto:your.email@example.com)
+**Aditya Kumar** - GitHub: [@AdityaKumar00007](https://github.com/AdityaKumar00007)
 
-Project Link: [https://github.com/yourusername/youtube-transcript-summarizer](https://github.com/yourusername/youtube-transcript-summarizer)
+**Project Link**: [https://github.com/AdityaKumar00007/youtube-transcript-summarizer](https://github.com/AdityaKumar00007/youtube-transcript-summarizer)
 
 ---
 
